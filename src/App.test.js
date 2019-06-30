@@ -6,7 +6,9 @@ import App from './App';
 Enzyme.configure({ adapter: new EnzymeAdapter() })
 
 const setup = (props, state) => {
-  return shallow(<App {...props} />)
+  const wrapper = shallow(<App {...props} />);
+  state ? wrapper.setState(state) : null;
+  return wrapper;
 }
 
 const findAttrVal = (wrapper, value) => {
@@ -28,9 +30,18 @@ it('displays a button to be clicked', () => {
   const component = findAttrVal(wrapper, "test-counter-button");
   expect(component.length).toBe(1);
 })
-it('increments the counter on button clicked', () => {
-
-})
 it('start the counter at 0', () => {
+  const wrapper = setup();
+  const component = wrapper.state('counter');
+  expect(component).toBe(0);
+})
+it('increments the counter on button clicked', () => {
+  const counter = 3;
+  const wrapper = setup(null, { counter });
+  const component = findAttrVal(wrapper, "test-counter-button");
+  component.simulate('click')
+  wrapper.update();
 
+  const displayCounter = findAttrVal(wrapper, "test-counter-h1");
+  expect(displayCounter.text()).toContain(counter + 1)
 })
