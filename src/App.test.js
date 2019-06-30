@@ -56,3 +56,31 @@ it('decrements the counter when clicked', () => {
   const displayCounter = findAttrVal(wrapper, "test-counter-h1");
   expect(displayCounter.text()).toContain(counter-1);
 })
+
+it('displays and error when counter goes below 0', () => {
+  const counter = 0;
+  const wrapper = setup(null, { counter })
+  const buttonComponent = findAttrVal(wrapper, "test-deccounter-button");
+
+  buttonComponent.simulate('click');
+  wrapper.update();
+
+  const errorComponent = findAttrVal(wrapper, 'error-counter-p')
+  expect(errorComponent.text()).toBeTruthy();
+})
+
+it('should clear the error when incrementing', () => {
+  const counter = 0;
+  const wrapper = setup(null, {counter});
+
+  const decButtonComponent = findAttrVal(wrapper, 'test-deccounter-button');
+  decButtonComponent.simulate('click');
+  wrapper.update();
+  
+  const buttonComponent = findAttrVal(wrapper, 'test-counter-button');
+  buttonComponent.simulate('click');
+  wrapper.update();
+
+  const errorComponent = findAttrVal(wrapper, 'error-counter-p');
+  expect(errorComponent.text()).toBeFalsy();
+})
